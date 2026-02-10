@@ -16,28 +16,35 @@
         </header>
 
         <main>
-            <section>
+            <section class="paragraphe-presentation">
                 <h2> <!--Sous-titre de la section-->
-                    Des manifestations à portée d'un clic !
+                   <u>Des manifestations à portée d'un clic !</u>
                 </h2>
                 <p> <!--Paragraphe de bienvenue--> 
                     ManifGO est votre plateforme de référence pour découvrir et organiser des manifestations en toute simplicité. Que vous soyez un citoyen engagé ou un organisateur passionné, notre site vous offre les outils nécessaires pour faire entendre votre voix.
                 </p>
             </section>
 
-            <section class="Introduction-ManifGO">
-                <h2>Rechercher</h2>
-                <form action>
-                    <label for="name">Trouvez votre manifestation via un mot clé ! :</label>
-                    <input type="text" placeholder="Entrez un mot-clé"/>
-                    <input type="submit" value="Rechercher"/>
-                </form>
-                <h2>Trier les manifestations</h2>
-                   <form class="tri">
+
+
+            <section class="introduction-manifgo">
+                <div class="rechercher-contenur">
+                    <h2><u>Rechercher/Trier</u></h2>
+                    <form action class="rechercher">
+                        <label for="name">Trouvez votre manifestation via un mot clé ! :</label>
+                        <input type="text" placeholder="Entrez un mot-clé"/>
+                        <input type="submit" value="Rechercher"/>
+                    </form>
+                </div>
+
+                <div class="trier-conteneur">
+                    <h2>Trier les manifestations par : </h2>
+                    <form class="trier">
                         <button type="button">Date</button>
                         <button type="button">Les plus populaires</button>
                         <button type="button">Catégorie</button>
                     </form>
+                </div>
             </section>
 
 
