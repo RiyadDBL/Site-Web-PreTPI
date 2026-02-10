@@ -13,14 +13,10 @@
             <h1> <!--Titre principal de la page-->
                 Bienvenue sur ManifGO !
             </h1>
-
-            
-            
         </header>
 
         <main>
             <section>
-                <img src="/Images/AccueilManif.jpg" alt="Image d'accueil ManifGO"> <!--Image d'accueil ( au cas où l'image s'affiche pas)-->
                 <h2> <!--Sous-titre de la section-->
                     Des manifestations à portée d'un clic !
                 </h2>
@@ -29,21 +25,60 @@
                 </p>
             </section>
 
-            <section>
+            <section class="Introduction-ManifGO">
                 <h2>Rechercher</h2>
                 <form action>
                     <label for="name">Trouvez votre manifestation via un mot clé ! :</label>
                     <input type="text" placeholder="Entrez un mot-clé"/>
                     <input type="submit" value="Rechercher"/>
                 </form>
+                <h2>Trier les manifestations</h2>
+                   <form class="tri">
+                        <button type="button">Date</button>
+                        <button type="button">Les plus populaires</button>
+                        <button type="button">Catégorie</button>
+                    </form>
             </section>
-            <section></section>
-            <section></section>
-            <section></section>
-                
 
 
-        
+
+            <section class="manifs">
+
+                <article class="manif">
+                    <div class="manif-media">
+                            <img src="/Images/AccueilManif.jpg" alt="Image de manifestation contre la guerre">
+                        <div class="overlay">
+                            <h3>NON À LA GUERRE ! OUI AU VERT !</h3>
+                            <p>Voir plus</p>
+                        </div>
+                    </div>
+                </article>
+
+
+                <article class="manif">
+                    <div class="manif-media">
+                        <img src="/Images/FemmesManif.jpg" alt="Image de manifestation pour le droit des femmes">
+
+                        <div class="overlay">
+                            <h3>LE RESPECT DES DROITS DES FEMMES !</h3>
+                            <p>Voir plus</p>
+                        </div>
+                    </div>
+                </article>
+
+
+                <article class="manif">
+                    <div class="manif-media">
+                        <img src="/Images/La-manifestation-anti-RN-place-de-la-Republique-a-Paris-le-15-juin-2024-1884483.jpg" alt="Image de manifestation contre le RN">
+
+                        <div class="overlay">
+                            <h3>ILS SONT ALLÉS TROP LOIN ! NON AU RN !</h3>
+                            <p>Voir plus</p>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
 
         </main>
 
