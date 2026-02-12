@@ -6,8 +6,7 @@ body {
 }
 
 header {
-  width: 100%;
-  height: 82px;
+  position: relative; /* AJOUT AFIN DE NE PAS AVOIR DE SOUCI AVEC LE BOUTON CO */
   background-color: rgb(255, 255, 255);
   border-bottom: 1px solid rgb(0, 0, 0);
   box-shadow: 0 0 10px rgba(19, 16, 16, 1);
@@ -18,6 +17,20 @@ header {
   font-size: 17px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
+
+.Connexion-Inscription {
+  position: absolute; /* se positionne par rapport à son parent (header) ce qui m'a permit de l'aligner à droite */
+  right: 20px;
+}
+
+.bouton-accueil {
+  position: absolute; /* se positionne par rapport à son parent (header) ce qui m'a permit de l'aligner à gauche */
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* espace entre le lien et l'image */
+}
+
 
 
 .paragraphe-presentation {
