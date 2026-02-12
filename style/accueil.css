@@ -1,8 +1,11 @@
-html,
+@import url("https://fonts.googleapis.com/css?family=Quicksand&display=swap");
+
+
 body {
   margin: 0;
   background-color: rgb(216, 238, 255);
-  font-family: Arial, sans-serif;
+  font-family: "Quicksand", sans-serif;
+  min-height: 100vh; /* Assure que le body prend au moins toute la hauteur de la fenêtre pour l'user ( imaginons téléphone etc... */
 }
 
 header {
@@ -11,11 +14,10 @@ header {
   border-bottom: 1px solid rgb(0, 0, 0);
   box-shadow: 0 0 10px rgba(19, 16, 16, 1);
   display: flex;
-  justify-content: center;
+  justify-content: center; 
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 17px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .Connexion-Inscription {
