@@ -65,7 +65,7 @@ h2 {
   font-size: 22px;
   color: rgb(50, 50, 51);
   margin: 20px;
-  text-align: center;
+  text-align: center;;
 }
 
 .trier-conteneur {
@@ -115,4 +115,41 @@ img {
   margin: 20px auto;
   max-width: 50%;
   height: auto;
+}
+
+.manif {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 20px auto;
+  max-width: 600px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.manif img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.manif h3 {
+  margin: 15px 0 10px 0;
+  font-size: 1.2em;
+  color: #222;
+}
+
+.voir-plus {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s;
+}
+
+.voir-plus:hover {
+  background-color: #0056b3;
 }

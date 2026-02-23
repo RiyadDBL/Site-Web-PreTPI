@@ -8,19 +8,23 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #7aacef;
+  background-color: rgb(216, 238, 255);
 }
 
 header {
-  background-color: #f0f6fb;
-  width: 40%;
-  margin: 20px auto;
-  padding: 5px;
+  position: relative; /* AJOUT AFIN DE NE PAS AVOIR DE SOUCI AVEC LE BOUTON CO */
+  background-color: rgb(255, 255, 255);
+  border-bottom: 1px solid rgb(0, 0, 0);
   border-radius: 10px;
-  text-align: center;
+  box-shadow: 0 0 10px rgba(19, 16, 16, 1);
+  justify-content: center; 
+  margin: 40px;
+  padding: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 17px;
   font-family: "Quicksand", sans-serif;
 }
 
@@ -33,6 +37,8 @@ header {
   background-color: #f0f6fb;
   padding: 15px 25px;
   border-radius: 10px;
+  box-shadow: 0 0 10px rgba(19, 16, 16, 1);
+  border-bottom: 1px solid rgb(0, 0, 0);
   font-size: 18px;
   font-family: "Quicksand", sans-serif;
 }
