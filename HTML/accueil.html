@@ -1,106 +1,84 @@
-<!DOCTYPE html>
-<html lang = "fr"> <!--Langue de la page qui sera utilisée ( Français )-->
-    <head>
-        <meta charset="UTF-8"> <!--Encodage des caractères occidentaux -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--Adaptation aux différents écrans, etc..-->
-        <title>Accueil - ManifGO</title> <!--Titre du site en question-->
-        <link rel="icon" type="image/png" href="/Images/Icone Site.png"> <!--Icône du site-->
-        <link rel="stylesheet" href="/style/accueil.css"> <!--Lien vers le fichier CSS-->
-    </head>
-    
-    <body>
-        <header>
-            <h1> <!--Titre principal de la page-->
-                Bienvenue sur ManifGO !
-            </h1>
+<!doctype html>
+<html lang="fr">
+  <!--Langue de la page qui sera utilisée ( Français )-->
+  <head>
+    <meta charset="UTF-8" />
+    <!--Encodage des caractères occidentaux -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--Adaptation aux différents écrans, etc..-->
+    <title>Accueil - ManifGO</title>
+    <!--Titre du site en question-->
+    <link rel="icon" type="image/png" href="/Images/Icone Site.png" />
+    <!--Icône du site-->
+    <link rel="stylesheet" href="/style/accueil.css" />
+    <!--Lien vers le fichier CSS-->
+    <script src="/xJava/accueil.js" type="module" defer></script>
+    <!--Lien vers le fichier JavaScript dans le même dossier que d'habitude-->
+  </head>
 
-            <div class="Connexion-Inscription">
-                <a href="/HTML/connexion.html">S'identifier/S'inscrire</a> <!--Lien vers la page de connexion-->
-            </div>
-        </header>
+  <body>
+    <header>
+      <h1>
+        <!--Titre principal de la page-->
+        Bienvenue sur ManifGO !
+      </h1>
 
-        <main>
-            <section class="paragraphe-presentation">
-                <h2> <!--Sous-titre de la section-->
-                   <u>Des manifestations à portée d'un clic !</u>
-                </h2>
-                <p> <!--Paragraphe de bienvenue--> 
-                    ManifGO est votre plateforme de référence pour découvrir et organiser des manifestations en toute simplicité. Que vous soyez un citoyen engagé ou un organisateur passionné, notre site vous offre les outils nécessaires pour faire entendre votre voix.
-                </p>
-            </section>
+      <div class="Connexion-Inscription">
+        <a href="/HTML/connexion.html">S'identifier/S'inscrire</a>
+        <!--Lien vers la page de connexion-->
+      </div>
+    </header>
 
+    <main>
+      <section class="paragraphe-presentation">
+        <h2>
+          <!--Sous-titre de la section-->
+          <u>Des manifestations à portée d'un clic !</u>
+        </h2>
+        <p>
+          <!--Paragraphe de bienvenue-->
+          ManifGO est votre plateforme de référence pour découvrir et organiser
+          des manifestations en toute simplicité. Que vous soyez un citoyen
+          engagé ou un organisateur passionné, notre site vous offre les outils
+          nécessaires pour faire entendre votre voix.
+        </p>
+      </section>
 
+      <section class="introduction-manifgo">
+        <div class="rechercher-contenur">
+          <h2><u>Rechercher/Trier</u></h2>
+          <form action class="rechercher">
+            <label for="name"
+              >Trouvez votre manifestation via un mot clé ! :</label
+            >
+            <input type="text" placeholder="Entrez un mot-clé" />
+            <input type="submit" value="Rechercher" />
+          </form>
+        </div>
 
-            <section class="introduction-manifgo">
-                <div class="rechercher-contenur">
-                    <h2><u>Rechercher/Trier</u></h2>
-                    <form action class="rechercher">
-                        <label for="name">Trouvez votre manifestation via un mot clé ! :</label>
-                        <input type="text" placeholder="Entrez un mot-clé"/>
-                        <input type="submit" value="Rechercher"/>
-                    </form>
-                </div>
+        <div class="trier-conteneur">
+          <h2>Trier les manifestations par :</h2>
+          <form class="trier">
+            <button type="button">Date</button>
+            <button type="button">Les plus populaires</button>
+            <button type="button">Catégorie</button>
+          </form>
+        </div>
+      </section>
 
-                <div class="trier-conteneur">
-                    <h2>Trier les manifestations par : </h2>
-                    <form class="trier">
-                        <button type="button">Date</button>
-                        <button type="button">Les plus populaires</button>
-                        <button type="button">Catégorie</button>
-                    </form>
-                </div>
-            </section>
+      <section class="manifs">
+        <h2><u>Découvrez les dernières manifestations à venir !</u></h2>
+        <div id="liste-manifs" class="manifs-container">
+          <!-- Les articles seront ajoutés ici par le JS -->
+        </div>
+      </section>
+    </main>
 
-
-
-            <section class="manifs">
-
-                <article class="manif">
-                    <div class="manif-media">
-                            <img src="/Images/AccueilManif.jpg" alt="Image de manifestation contre la guerre">
-                        <div class="overlay">
-                            <h3>NON À LA GUERRE ! OUI AU VERT !</h3>
-                            <p>Voir plus</p>
-                        </div>
-                    </div>
-                </article>
-
-
-                <article class="manif">
-                    <div class="manif-media">
-                        <img src="/Images/FemmesManif.jpg" alt="Image de manifestation pour le droit des femmes">
-
-                        <div class="overlay">
-                            <h3>LE RESPECT DES DROITS DES FEMMES !</h3>
-                            <p>Voir plus</p>
-                        </div>
-                    </div>
-                </article>
-
-
-                <article class="manif">
-                    <div class="manif-media">
-                        <img src="/Images/La-manifestation-anti-RN-place-de-la-Republique-a-Paris-le-15-juin-2024-1884483.jpg" alt="Image de manifestation contre le RN">
-
-                        <div class="overlay">
-                            <h3>ILS SONT ALLÉS TROP LOIN ! NON AU RN !</h3>
-                            <p>Voir plus</p>
-                        </div>
-                    </div>
-                </article>
-
-            </section>
-
-        </main>
-
-        <footer>
-            <p> <!--Paragraphe du pied de page avec crédits-->
-                &copy; 2026 ManifGO. Tous droits réservés à M.Kattar.
-            </p>
-        </footer>
-
-        <script src="/xJava/accueil.js" defer></script> <!--Lien vers le fichier JavaScript-->
-        
-    </body>
-
+    <footer>
+      <p>
+        <!--Paragraphe du pied de page avec crédits-->
+        &copy; 2026 ManifGO. Tous droits réservés à M.Kattar.
+      </p>
+    </footer>
+  </body>
 </html>
