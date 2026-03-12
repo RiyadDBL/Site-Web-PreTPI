@@ -10,6 +10,7 @@
   <body>
     <header>
       <h1>Administration ManifGO</h1>
+
       <div class="Accueil">
         <a href="/HTML/accueil.html">Accueil</a>
       </div>
@@ -17,8 +18,10 @@
 
     <main>
       <!-- GESTION DES MANIFESTATIONS -->
+
       <section>
         <h2>Gestion des manifestations</h2>
+
         <button type="button" id="exporter-donnees">
           Exporter les données
         </button>
@@ -29,28 +32,32 @@
               <th>Titre</th>
               <th>Date de début</th>
               <th>Date de fin</th>
-              <th>Horaire de début</th>
-              <th>Horaire de fin</th>
+              <th>Horaire début</th>
+              <th>Horaire fin</th>
+              <th>Lieu</th>
               <th>Catégorie</th>
               <th>Statut</th>
               <th>Intérêt</th>
+              <th>Visuel</th>
               <th>Actions</th>
-              <!-- Nouvelle colonne pour Modifier / Supprimer -->
             </tr>
           </thead>
+
           <tbody id="liste-manifs">
-            <!-- Les manifestations seront insérées ici dynamiquement -->
+            <!-- JS -->
           </tbody>
         </table>
       </section>
 
       <!-- FORMULAIRE AJOUT / MODIFICATION -->
+
       <section>
         <h2>Ajouter / Modifier une manifestation</h2>
+
         <form
+          id="form-manifestation"
           method="post"
           enctype="multipart/form-data"
-          id="form-manifestation"
         >
           <label>Titre</label>
           <input type="text" name="titre" required />
@@ -65,37 +72,40 @@
           <input type="date" name="date_fin" required />
 
           <label>Horaire de début</label>
-          <input type="time" name="horaire_debut" required />
+          <input type="time" name="horraire_debut" required />
 
           <label>Horaire de fin</label>
-          <input type="time" name="horaire_fin" required />
+          <input type="time" name="horraire_fin" required />
+
+          <label>Lieu</label>
+          <input type="text" name="lieu" required />
 
           <label>Catégorie</label>
-          <select name="categorie" required>
-            <!-- Les catégories dynamiques seront insérées ici -->
-          </select>
+          <select name="categorie" required></select>
 
           <label>Image</label>
+
           <input type="file" name="image" accept="image/*" />
 
-          <label>Statut</label>
-          <select name="statut" required>
-            <option value="affichee">Affichée</option>
-            <option value="modification">En cours de modification</option>
-            <option value="archivee">Archivée</option>
-          </select>
+          <img
+            id="preview-image"
+            style="max-width: 150px; display: block; margin-top: 10px"
+          />
 
-          <!-- Bouton type="submit" pour que le formulaire déclenche l'événement submit -->
+          <label>Statut</label>
+
+          <input type="text" name="statut" placeholder="Entrez le statut" />
+
           <button type="submit">Enregistrer</button>
         </form>
       </section>
 
       <!-- STATISTIQUES -->
+
       <section>
         <h2>Manifestations avec le plus d’intérêt</h2>
-        <ul>
-          <!-- Liste dynamique -->
-        </ul>
+
+        <ul id="top-interets"></ul>
       </section>
     </main>
   </body>

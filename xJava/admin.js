@@ -1,8 +1,7 @@
 // -----------------------------------
-// admin.js
+// Connexion Supabase
 // -----------------------------------
 
-// 1️⃣ Connexion à Supabase
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 const supabase = createClient(
@@ -11,7 +10,9 @@ const supabase = createClient(
 );
 
 // -----------------------------------
-// 2️⃣ Vérification que l'utilisateur est connecté
+// Vérifier utilisateur connecté
+// -----------------------------------
+
 async function checkUser() {
   const {
     data: { user },
@@ -27,104 +28,175 @@ async function checkUser() {
 }
 
 // -----------------------------------
-// Lancer le reste du code seulement si connecté
-checkUser().then((isConnected) => {
+// Lancer admin si connecté
+// -----------------------------------
+
+checkUser().then(async (isConnected) => {
   if (!isConnected) return;
 
   // -----------------------------------
-  // Sélecteurs du HTML
+  // Sélecteurs
+  // -----------------------------------
+
   const listeManifs = document.getElementById("liste-manifs");
   const formManif = document.getElementById("form-manifestation");
   const exporterBtn = document.getElementById("exporter-donnees");
+  const topInterets = document.getElementById("top-interets");
+  const previewImage = document.getElementById("preview-image");
 
   // -----------------------------------
-  // Charger les catégories
+  // Charger catégories
+  // -----------------------------------
+
   async function afficherCategories() {
-    const selectCat = document.querySelector('select[name="categorie"]');
+    const selectCat = formManif.querySelector('select[name="categorie"]');
 
     const { data, error } = await supabase.from("categorie").select("*");
 
-    if (error) return console.error("Erreur catégories :", error);
+    if (error) {
+      console.error(error);
+      return;
+    }
 
     selectCat.innerHTML = data
-      .map((cat) => `<option value="${cat.id_categorie}">${cat.titre}</option>`)
+      .map(
+        (cat) =>
+          `<option value="${cat.id_categorie}">
+      ${cat.nom}
+    </option>`,
+      )
       .join("");
   }
 
   // -----------------------------------
-  // Afficher les manifestations
+  // Charger manifestations
+  // -----------------------------------
+
   async function afficherManifestations() {
     const { data, error } = await supabase
       .from("manifestation")
       .select(
         `
-        id_manifestation,
-        titre,
-        description,
-        date_debut,
-        date_fin,
-        image,
-        nb_interesses,
-        id_admin,
-        id_categorie,
-        horraire_debut,
-        horraire_fin,
-        statut,
-        categorie: categorie(titre)
-      `,
+    id_manifestation,
+    titre,
+    description,
+    date_debut,
+    date_fin,
+    horraire_debut,
+    horraire_fin,
+    statut,
+    nb_interesses,
+    image,
+    id_categorie,
+    categorie:categorie(nom)
+  `,
       )
       .order("date_debut", { ascending: true });
 
-    if (error) return console.error("Erreur manifestations :", error);
+    if (error) {
+      console.error(error);
+      return;
+    }
 
     listeManifs.innerHTML = data
       .map(
         (m) => `
-        <tr>
-          <td>${m.titre}</td>
-          <td>${new Date(m.date_debut).toLocaleDateString()}</td>
-          <td>${new Date(m.date_fin).toLocaleDateString()}</td>
-          <td>${m.horraire_debut ?? ""}</td>
-          <td>${m.horraire_fin ?? ""}</td>
-          <td>${m.categorie?.titre ?? "—"}</td>
-          <td>${m.statut ?? "—"}</td>
-          <td>${m.nb_interesses ?? 0}</td>
-          <td>
-            <button class="modifier" data-id="${m.id_manifestation}">Modifier</button>
-            <button class="supprimer" data-id="${m.id_manifestation}">Supprimer</button>
-          </td>
-        </tr>
-      `,
+
+<tr>
+
+<td>${m.titre}</td>
+
+<td>${new Date(m.date_debut).toLocaleDateString()}</td>
+
+<td>${new Date(m.date_fin).toLocaleDateString()}</td>
+
+<td>${m.horraire_debut ?? ""}</td>
+
+<td>${m.horraire_fin ?? ""}</td>
+
+<td>${m.categorie?.nom ?? "-"}</td>
+
+<td>${m.statut ?? ""}</td>
+
+<td>${m.nb_interesses ?? 0}</td>
+
+<td>
+${m.image ? `<img src="${m.image}" style="max-width:80px;border-radius:5px;">` : ""}
+</td>
+
+<td>
+
+<button class="modifier" data-id="${m.id_manifestation}">
+Modifier
+</button>
+
+<button class="supprimer" data-id="${m.id_manifestation}">
+Supprimer
+</button>
+
+</td>
+
+</tr>
+
+`,
       )
       .join("");
   }
 
   // -----------------------------------
-  // Gestion clics modifier / supprimer
+  // Top manifestations
+  // -----------------------------------
+
+  async function chargerTopInterets() {
+    const { data } = await supabase
+      .from("manifestation")
+      .select("titre,nb_interesses")
+      .order("nb_interesses", { ascending: false })
+      .limit(5);
+
+    topInterets.innerHTML = "";
+
+    data.forEach((m) => {
+      const li = document.createElement("li");
+
+      li.textContent = `${m.titre} (${m.nb_interesses ?? 0} intéressés)`;
+
+      topInterets.appendChild(li);
+    });
+  }
+
+  // -----------------------------------
+  // Modifier / Supprimer
+  // -----------------------------------
+
   listeManifs.addEventListener("click", async (e) => {
     const target = e.target;
-    const id = target.getAttribute("data-id");
+
+    const id = target.dataset.id;
 
     // SUPPRIMER
-    if (target.classList.contains("supprimer")) {
-      const confirmDel = confirm(
-        "Voulez-vous vraiment supprimer cette manifestation ?",
-      );
 
-      if (!confirmDel) return;
+    if (target.classList.contains("supprimer")) {
+      if (!confirm("Supprimer cette manifestation ?")) return;
 
       const { error } = await supabase
         .from("manifestation")
         .delete()
         .eq("id_manifestation", id);
 
-      if (error) return console.error("Erreur suppression :", error);
+      if (error) {
+        alert(error.message);
+        return;
+      }
 
-      alert("Manifestation supprimée !");
+      alert("Manifestation supprimée");
+
       afficherManifestations();
+      chargerTopInterets();
     }
 
     // MODIFIER
+
     if (target.classList.contains("modifier")) {
       const { data, error } = await supabase
         .from("manifestation")
@@ -132,143 +204,179 @@ checkUser().then((isConnected) => {
         .eq("id_manifestation", id)
         .single();
 
-      if (error) return console.error("Erreur récupération :", error);
+      if (error) {
+        console.error(error);
+        return;
+      }
 
       formManif.titre.value = data.titre;
       formManif.description.value = data.description;
+
       formManif.date_debut.value = data.date_debut.split("T")[0];
       formManif.date_fin.value = data.date_fin.split("T")[0];
-      formManif.horaire_debut.value = data.horraire_debut ?? "";
-      formManif.horaire_fin.value = data.horraire_fin ?? "";
+
+      formManif.horraire_debut.value = data.horraire_debut ?? "";
+      formManif.horraire_fin.value = data.horraire_fin ?? "";
+
       formManif.categorie.value = data.id_categorie;
       formManif.statut.value = data.statut ?? "";
 
+      previewImage.src = data.image ?? "";
+
       formManif.dataset.editId = id;
-      formManif.querySelector("button[type=submit]").textContent =
-        "Mettre à jour";
+
+      formManif.querySelector("button").textContent = "Mettre à jour";
     }
   });
 
   // -----------------------------------
-  // Formulaire ajout / modification
+  // Ajouter / Modifier
+  // -----------------------------------
+
   formManif.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(formManif);
+
     const editId = formManif.dataset.editId;
 
     let imageUrl = null;
 
+    // Upload image
+
     const imageFile = formData.get("image");
 
     if (imageFile && imageFile.size > 0) {
+      const fileName = Date.now() + "-" + imageFile.name;
+
       const { data, error } = await supabase.storage
-        .from("manifestation-images")
-        .upload(`images/${Date.now()}-${imageFile.name}`, imageFile);
+        .from("Images")
+        .upload(fileName, imageFile);
 
       if (error) {
-        alert("Erreur upload image : " + error.message);
+        alert(error.message);
         return;
       }
 
-      imageUrl = `https://qaloowmeymzglsirernx.supabase.co/storage/v1/object/public/manifestation-images/${data.path}`;
+      imageUrl = `https://qaloowmeymzglsirernx.supabase.co/storage/v1/object/public/Images/${data.path}`;
     }
+
+    // Admin connecté
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
     const idAdmin = user.id;
 
+    // MODIFICATION
+
     if (editId) {
+      let updateData = {
+        titre: formData.get("titre"),
+
+        description: formData.get("description"),
+
+        date_debut: formData.get("date_debut"),
+
+        date_fin: formData.get("date_fin"),
+
+        horraire_debut: formData.get("horraire_debut"),
+
+        horraire_fin: formData.get("horraire_fin"),
+
+        id_categorie: parseInt(formData.get("categorie")),
+
+        statut: formData.get("statut"),
+
+        id_admin: idAdmin,
+      };
+
+      if (imageUrl) {
+        updateData.image = imageUrl;
+      }
+
       const { error } = await supabase
         .from("manifestation")
-        .update({
-          titre: formData.get("titre"),
-          description: formData.get("description"),
-          date_debut: formData.get("date_debut"),
-          date_fin: formData.get("date_fin"),
-          horraire_debut: formData.get("horaire_debut"),
-          horraire_fin: formData.get("horaire_fin"),
-          id_categorie: parseInt(formData.get("categorie")),
-          statut: formData.get("statut"),
-          id_admin: idAdmin,
-          ...(imageUrl && { image: imageUrl }),
-        })
+        .update(updateData)
         .eq("id_manifestation", editId);
 
-      if (error)
-        return alert("Erreur lors de la modification : " + error.message);
+      if (error) {
+        alert(error.message);
+        return;
+      }
 
-      alert("Manifestation mise à jour !");
+      alert("Manifestation mise à jour");
+
       delete formManif.dataset.editId;
 
-      formManif.querySelector("button[type=submit]").textContent =
-        "Enregistrer";
-    } else {
+      formManif.querySelector("button").textContent = "Enregistrer";
+    }
+
+    // CREATION
+    else {
       const { error } = await supabase.from("manifestation").insert([
         {
           titre: formData.get("titre"),
+
           description: formData.get("description"),
+
           date_debut: formData.get("date_debut"),
+
           date_fin: formData.get("date_fin"),
-          horraire_debut: formData.get("horaire_debut"),
-          horraire_fin: formData.get("horaire_fin"),
+
+          horraire_debut: formData.get("horraire_debut"),
+
+          horraire_fin: formData.get("horraire_fin"),
+
           id_categorie: parseInt(formData.get("categorie")),
+
           statut: formData.get("statut"),
+
           id_admin: idAdmin,
+
           image: imageUrl,
+
           nb_interesses: 0,
         },
       ]);
 
-      if (error) return alert("Erreur lors de l'ajout : " + error.message);
+      if (error) {
+        alert(error.message);
+        return;
+      }
 
-      alert("Manifestation ajoutée !");
+      alert("Manifestation ajoutée");
     }
 
+    // RESET
+
     formManif.reset();
+
+    previewImage.src = "";
+
     afficherManifestations();
+
+    chargerTopInterets();
   });
 
   // -----------------------------------
   // Export CSV
-  function convertToCSV(data) {
-    if (!data.length) return "";
-
-    const keys = Object.keys(data[0]);
-
-    const header = keys.join(";");
-
-    const rows = data.map((obj) =>
-      keys
-        .map((k) => {
-          let val = obj[k] ?? "";
-          val = val.toString().replace(/"/g, '""');
-
-          if (val.search(/("|;|\n)/g) >= 0) val = `"${val}"`;
-
-          return val;
-        })
-        .join(";"),
-    );
-
-    return [header, ...rows].join("\n");
-  }
+  // -----------------------------------
 
   exporterBtn.addEventListener("click", async () => {
-    const { data, error } = await supabase.from("manifestation").select("*");
+    const { data } = await supabase.from("manifestation").select("*");
 
-    if (error) return console.error(error);
+    const csv = convertToCSV(data);
 
-    const csvContent = convertToCSV(data);
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const blob = new Blob([csv], { type: "text/csv" });
 
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
 
     a.href = url;
+
     a.download = "manifestations.csv";
 
     a.click();
@@ -277,7 +385,28 @@ checkUser().then((isConnected) => {
   });
 
   // -----------------------------------
-  // Initialisation
+  // Convert CSV
+  // -----------------------------------
+
+  function convertToCSV(data) {
+    if (!data.length) return "";
+
+    const keys = Object.keys(data[0]);
+
+    const header = keys.join(";");
+
+    const rows = data.map((obj) => keys.map((k) => obj[k] ?? "").join(";"));
+
+    return [header, ...rows].join("\n");
+  }
+
+  // -----------------------------------
+  // INIT
+  // -----------------------------------
+
   afficherCategories();
+
   afficherManifestations();
+
+  chargerTopInterets();
 });

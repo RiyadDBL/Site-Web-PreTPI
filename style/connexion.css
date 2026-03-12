@@ -4,6 +4,13 @@
   box-sizing: border-box;
 }
 
+h1 {
+  font-size: 22px;
+  color: rgb(50, 50, 51);
+  margin: 20px;
+  text-align: center;
+}
+
 body {
   margin: 0;
   display: flex;
