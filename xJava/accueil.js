@@ -1,4 +1,4 @@
-// Importer createClient si nécessaire (selon ton environnement)
+// Importer createClient si nécessaire (selon l'environnement)
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 // Connexion Supabase

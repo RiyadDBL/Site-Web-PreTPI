@@ -1,96 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Administration - ManifGO</title>
-    <link rel="stylesheet" href="/style/admin.css">
-</head>
+    <link rel="stylesheet" href="/style/admin.css" />
+    <script src="/xJava/admin.js" type="module" defer></script>
+  </head>
 
-<body>
+  <body>
+    <header>
+      <h1>Administration ManifGO</h1>
+      <div class="Accueil">
+        <a href="/HTML/accueil.html">Accueil</a>
+      </div>
+    </header>
 
-<header>
-    <h1>Administration ManifGO</h1>
-    <div class="Accueil">
-                <a href="/HTML/accueil.html">Accueil</a> <!--Lien vers la page d'accueil-->
-            </div>
-</header>
-
-<main>
-
-    <!-- GESTION DES MANIFESTATIONS -->
-    <section>
+    <main>
+      <!-- GESTION DES MANIFESTATIONS -->
+      <section>
         <h2>Gestion des manifestations</h2>
-
-        <button type="button">Modifier une manifestation</button>
-        <button type="button">Exporter les données</button>
+        <button type="button" id="exporter-donnees">
+          Exporter les données
+        </button>
 
         <table>
-            <thead>
-                <tr>
-                    <th>Titre</th>
-                    <th>Date</th>
-                    <th>Horaire</th>
-                    <th>Catégorie</th>
-                    <th>Statut</th>
-                    <th>Intérêt</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Contenu dynamique qui sera mis à jour via JavaScript bien évidemment -->
-            </tbody>
+          <thead>
+            <tr>
+              <th>Titre</th>
+              <th>Date de début</th>
+              <th>Date de fin</th>
+              <th>Horaire de début</th>
+              <th>Horaire de fin</th>
+              <th>Catégorie</th>
+              <th>Statut</th>
+              <th>Intérêt</th>
+              <th>Actions</th>
+              <!-- Nouvelle colonne pour Modifier / Supprimer -->
+            </tr>
+          </thead>
+          <tbody id="liste-manifs">
+            <!-- Les manifestations seront insérées ici dynamiquement -->
+          </tbody>
         </table>
-    </section>
+      </section>
 
+      <!-- FORMULAIRE AJOUT / MODIFICATION -->
+      <section>
+        <h2>Ajouter / Modifier une manifestation</h2>
+        <form
+          method="post"
+          enctype="multipart/form-data"
+          id="form-manifestation"
+        >
+          <label>Titre</label>
+          <input type="text" name="titre" required />
 
-    <!-- FORMULAIRE AJOUT / MODIFICATION -->
-    <section>
-        <h2>Ajouter une nouvelle manifestation</h2>
+          <label>Description</label>
+          <textarea name="description" required></textarea>
 
-        <form method="post" enctype="multipart/form-data">
+          <label>Date de début</label>
+          <input type="date" name="date_debut" required />
 
-            <label>Titre</label>
-            <input type="text" name="titre" required>
+          <label>Date de fin</label>
+          <input type="date" name="date_fin" required />
 
-            <label>Description</label>
-            <textarea name="description" required></textarea>
+          <label>Horaire de début</label>
+          <input type="time" name="horaire_debut" required />
 
-            <label>Date</label>
-            <input type="date" name="date" required>
+          <label>Horaire de fin</label>
+          <input type="time" name="horaire_fin" required />
 
-            <label>Horaire</label>
-            <input type="time" name="horaire" required>
+          <label>Catégorie</label>
+          <select name="categorie" required>
+            <!-- Les catégories dynamiques seront insérées ici -->
+          </select>
 
-            <label>Catégorie</label>
-            <select name="categorie" required>
-                <!-- Catégories dynamiques -->
-            </select>
+          <label>Image</label>
+          <input type="file" name="image" accept="image/*" />
 
-            <label>Image</label>
-            <input type="file" name="image" accept="image/*">
+          <label>Statut</label>
+          <select name="statut" required>
+            <option value="affichee">Affichée</option>
+            <option value="modification">En cours de modification</option>
+            <option value="archivee">Archivée</option>
+          </select>
 
-            <label>Statut</label>
-            <select name="statut" required>
-                <option value="affichee">Affichée</option>
-                <option value="modification">En cours de modification</option>
-                <option value="archivee">Archivée</option>
-            </select>
-
-            <button type="submit">Enregistrer</button>
-
+          <!-- Bouton type="submit" pour que le formulaire déclenche l'événement submit -->
+          <button type="submit">Enregistrer</button>
         </form>
-    </section>
+      </section>
 
-
-    <!-- STATISTIQUES -->
-    <section>
+      <!-- STATISTIQUES -->
+      <section>
         <h2>Manifestations avec le plus d’intérêt</h2>
         <ul>
-            <!-- Liste dynamique -->
+          <!-- Liste dynamique -->
         </ul>
-    </section>
-
-</main>
-
-</body>
+      </section>
+    </main>
+  </body>
 </html>
