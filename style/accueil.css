@@ -155,7 +155,7 @@ img {
 .manif {
   width: 100%;
   max-width: 600px;
-  height: 420px;
+  height: 500px;
   perspective: 1000px;
   padding: 0; /* On enlève le padding pour éviter les bugs de flip */
 }
@@ -203,7 +203,6 @@ img {
 /* Face arrière */
 .manif-back {
   transform: rotateY(180deg);
-  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
