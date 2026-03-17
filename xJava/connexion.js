@@ -7,56 +7,59 @@ const supabase = createClient(
 );
 
 // 2️⃣ Gestion des onglets
-let tabs = document.querySelectorAll(".tab-link:not(.desactive)");
-
-tabs.forEach((tab) => {
+document.querySelectorAll(".tab-link:not(.desactive)").forEach((tab) => {
   tab.addEventListener("click", () => {
-    unSelectAll();
-    tab.classList.add("active");
-    let ref = tab.getAttribute("data-ref");
     document
-      .querySelector(`.tab-body[data-id="${ref}"]`)
+      .querySelectorAll(".tab-link")
+      .forEach((t) => t.classList.remove("active"));
+    document
+      .querySelectorAll(".tab-body")
+      .forEach((b) => b.classList.remove("active"));
+    tab.classList.add("active");
+    document
+      .querySelector(`.tab-body[data-id="${tab.dataset.ref}"]`)
       .classList.add("active");
   });
 });
-
-function unSelectAll() {
-  tabs.forEach((tab) => tab.classList.remove("active"));
-  let tabbodies = document.querySelectorAll(".tab-body");
-  tabbodies.forEach((tab) => tab.classList.remove("active"));
-}
-
 document.querySelector(".tab-link.active").click();
 
-// 3️⃣ Connexion admin
-const btnConnexion = document.querySelector(
-  '.tab-body[data-id="connexion"] .btn',
-);
+// 3️⃣ Connexion admin avec rôle
+document
+  .querySelector('.tab-body[data-id="connexion"] .btn')
+  .addEventListener("click", async () => {
+    const email = document.querySelector(
+      '.tab-body[data-id="connexion"] input[type="email"]',
+    ).value;
+    const password = document.querySelector(
+      '.tab-body[data-id="connexion"] input[type="password"]',
+    ).value;
 
-btnConnexion.addEventListener("click", async () => {
-  const email = document.querySelector(
-    '.tab-body[data-id="connexion"] input[type="email"]',
-  ).value;
-  const password = document.querySelector(
-    '.tab-body[data-id="connexion"] input[type="password"]',
-  ).value;
+    if (!email || !password) return alert("Veuillez remplir tous les champs !");
 
-  if (!email || !password) {
-    alert("Veuillez remplir tous les champs !");
-    return;
-  }
+    // connexion Supabase
+    const { data: signInData, error: signInError } =
+      await supabase.auth.signInWithPassword({ email, password });
+    if (signInError)
+      return alert("Erreur de connexion : " + signInError.message);
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+    const userUUID = signInData.user.id;
 
-  if (error) {
-    alert("Erreur de connexion : " + error.message);
-  } else {
-    console.log("Admin connecté :", data.user);
+    // récupère le rôle depuis la table administrateur
+    let { data: adminData, error: adminError } = await supabase
+      .from("administrateur")
+      .select("id_admin, id_role")
+      .eq("id_admin", userUUID) // utilise bien l'UUID de l'utilisateur
+      .single();
 
-    // redirection vers la page admin
+    if (adminError)
+      return alert("Erreur récupération rôle : " + adminError.message);
+
+    const roleId = adminData.id_role;
+
+    // stocke le rôle et l'UUID pour la page admin
+    localStorage.setItem("roleId", roleId);
+    localStorage.setItem("userUUID", userUUID);
+
+    // redirection vers l'admin
     window.location.href = "/HTML/admin.html";
-  }
-});
+  });

@@ -1,7 +1,6 @@
 // -----------------------------------
 // Connexion à Supabase
 // -----------------------------------
-
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 const supabase = createClient(
@@ -12,7 +11,6 @@ const supabase = createClient(
 // -----------------------------------
 // Messages persistants
 // -----------------------------------
-
 const messageDiv = document.getElementById("message");
 
 function showMessage(msg, type = "error") {
@@ -27,29 +25,30 @@ function clearMessage() {
 }
 
 // -----------------------------------
-// Vérifier si l'utilisateur est connecté
+// Vérifier si l'utilisateur est connecté et récupérer son rôle
 // -----------------------------------
-
 async function checkUser() {
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
 
-  if (error || !user) {
+  // récupère le role stocké depuis la connexion
+  const roleId = parseInt(localStorage.getItem("roleId"));
+
+  if (error || !user || !roleId) {
     window.location.href = "/HTML/connexion.html";
     return false;
   }
 
-  return true;
+  return roleId;
 }
 
 // -----------------------------------
-// Lancer l'admin si l'utilisateur est connecté
+// Lancer l'admin si connecté
 // -----------------------------------
-
-checkUser().then(async (isConnected) => {
-  if (!isConnected) return;
+checkUser().then(async (roleId) => {
+  if (!roleId) return; // si pas connecté, on arrête tout ici
 
   const listeManifs = document.getElementById("liste-manifs");
   const formManif = document.getElementById("form-manifestation");
@@ -57,10 +56,19 @@ checkUser().then(async (isConnected) => {
   const topInterets = document.getElementById("top-interets");
   const previewImage = document.getElementById("preview-image");
 
+  // 👀 Masquer certaines actions si roleId = 2
+  if (roleId === 2) {
+    if (exporterBtn) exporterBtn.remove();
+    // Supprimer automatiquement tous les boutons "Supprimer" après le rendu
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll(".supprimer").forEach((btn) => btn.remove());
+    });
+    observer.observe(listeManifs, { childList: true, subtree: true });
+  }
+
   // -----------------------------------
   // Afficher catégories
   // -----------------------------------
-
   async function afficherCategories() {
     const selectCat = formManif.querySelector('select[name="categorie"]');
     const { data, error } = await supabase.from("categorie").select("*");
@@ -78,7 +86,6 @@ checkUser().then(async (isConnected) => {
   // -----------------------------------
   // Afficher manifestations
   // -----------------------------------
-
   async function afficherManifestations() {
     const { data, error } = await supabase
       .from("manifestation")
@@ -122,10 +129,9 @@ checkUser().then(async (isConnected) => {
 <td>${m.image ? `<img src="${m.image}" style="max-width:80px;border-radius:5px;">` : ""}</td>
 <td>
 <button class="modifier" data-id="${m.id_manifestation}">Modifier</button>
-<button class="supprimer" data-id="${m.id_manifestation}">Supprimer</button>
+${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supprimer</button>` : ""}
 </td>
-</tr>
-`,
+</tr>`,
       )
       .join("");
   }
@@ -133,7 +139,6 @@ checkUser().then(async (isConnected) => {
   // -----------------------------------
   // Top 5 manifestations populaires
   // -----------------------------------
-
   async function chargerTopInterets() {
     const { data, error } = await supabase
       .from("manifestation")
@@ -157,12 +162,11 @@ checkUser().then(async (isConnected) => {
   // -----------------------------------
   // Modifier / Supprimer manifestation
   // -----------------------------------
-
   listeManifs.addEventListener("click", async (e) => {
     const target = e.target;
     const id = target.dataset.id;
 
-    if (target.classList.contains("supprimer")) {
+    if (target.classList.contains("supprimer") && roleId === 1) {
       if (!confirm("Supprimer cette manifestation ?")) return;
 
       const { error } = await supabase
@@ -215,7 +219,6 @@ checkUser().then(async (isConnected) => {
   // -----------------------------------
   // Ajouter / Modifier manifestation
   // -----------------------------------
-
   formManif.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(formManif);
@@ -230,7 +233,7 @@ checkUser().then(async (isConnected) => {
         .upload(fileName, imageFile);
       if (error) {
         showMessage(
-          "Il y a une erreur dans le choix de l'image. Veuillez réessayer en changeant le nom ou le format. ( ex : Manifestation Trains.jpg )",
+          "Erreur dans le choix de l'image. Changez le nom ou le format.",
           "error",
         );
         return;
@@ -309,26 +312,27 @@ checkUser().then(async (isConnected) => {
   // -----------------------------------
   // Export CSV
   // -----------------------------------
+  if (exporterBtn && roleId === 1) {
+    exporterBtn.addEventListener("click", async () => {
+      const { data, error } = await supabase.from("manifestation").select("*");
+      if (error) {
+        showMessage("Erreur lors de l'export CSV.", "error");
+        return;
+      }
 
-  exporterBtn.addEventListener("click", async () => {
-    const { data, error } = await supabase.from("manifestation").select("*");
-    if (error) {
-      showMessage("Erreur lors de l'export CSV.", "error");
-      return;
-    }
+      const csv = convertToCSV(data);
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
 
-    const csv = convertToCSV(data);
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "manifestations.csv";
+      a.click();
+      URL.revokeObjectURL(url);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "manifestations.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-
-    showMessage("Export CSV terminé !", "success");
-  });
+      showMessage("Export CSV terminé !", "success");
+    });
+  }
 
   function convertToCSV(data) {
     if (!data.length) return "";
@@ -341,7 +345,6 @@ checkUser().then(async (isConnected) => {
   // -----------------------------------
   // Initialisation
   // -----------------------------------
-
   afficherCategories();
   afficherManifestations();
   chargerTopInterets();

@@ -1,15 +1,16 @@
 @import url("https://fonts.googleapis.com/css?family=Quicksand&display=swap");
 
-
+/* body */
 body {
   margin: 0;
   background-color: rgb(216, 238, 255);
   font-family: "Quicksand", sans-serif;
-  min-height: 100vh; /* Assure que le body prend au moins toute la hauteur de la fenêtre pour l'user ( imaginons téléphone etc... */
+  min-height: 100vh;
 }
 
+/* header */
 header {
-  position: relative; /* AJOUT AFIN DE NE PAS AVOIR DE SOUCI AVEC LE BOUTON CO */
+  position: relative;
   background-color: rgb(255, 255, 255);
   border-bottom: 1px solid rgb(0, 0, 0);
   box-shadow: 0 0 10px rgba(19, 16, 16, 1);
@@ -20,35 +21,28 @@ header {
   font-size: 17px;
 }
 
+/* bouton accueil */
 .bouton-accueil {
-  position: absolute; /* se positionne par rapport à son parent (header) ce qui m'a permit de l'aligner à gauche */
+  position: absolute;
   left: 20px;
   display: flex;
   align-items: center;
-  gap: 10px; /* espace entre le lien et l'image */
+  gap: 10px;
 }
 
-
-
-.paragraphe-presentation {
-  background-color: rgb(255, 255, 255);
-  width: 80%;
-  margin: 20px auto;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(19, 16, 16, 1);
-  text-align: center;
-}
-
+/* sections présentation */
+.paragraphe-presentation,
 .introduction-manifgo {
   background-color: rgb(255, 255, 255);
-  width: 90%;
-  margin: 20px auto;
-  padding: 5px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(19, 16, 16, 1);
+  margin: 20px auto;
+  padding: 10px;
+  text-align: center;
+  width: 80%;
 }
 
+/* titres h2 */
 h2 {
   font-size: 22px;
   color: rgb(50, 50, 51);
@@ -56,48 +50,49 @@ h2 {
   text-align: center;
 }
 
+/* recherche */
 .rechercher {
   font-size: 22px;
   color: rgb(50, 50, 51);
   margin: 20px;
-  text-align: center;;
+  text-align: center;
 }
 
+/* tri container */
 .trier-conteneur {
-    display: flex;           /* aligne h2 et form sur la même ligne */
-    align-items: center;     /* centre verticalement le h2 et les boutons */
-    justify-content: center; /* CENTRE horizontalement tout le contenu */
-    gap: 25px;               /* espace entre le h2 et le form */
-    flex-wrap: wrap;         /* permet de passer à la ligne sur petit écran */
-    margin: 20px 0;
-    text-align: center;      /* centre le texte à l'intérieur du h2 et form si besoin */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+  text-align: center;
 }
-
 
 .trier-conteneur h2 {
-    margin: 0;               /* supprime le margin par défaut du h2 */
-    font-size: 20px;
+  margin: 0;
+  font-size: 20px;
 }
 
 .trier {
-    display: flex;
-    gap: 10px;               /* espace entre les boutons */
+  display: flex;
+  gap: 10px;
 }
 
 .trier button {
-    padding: 8px 12px;
-    border-radius: 5px;
-    border: 1px solid #333;
-    background-color: #eee;
-    cursor: pointer;
-    transition: background 0.3s;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background-color: #eee;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
 .trier button:hover {
-    background-color: #ccc;
+  background-color: #ccc;
 }
 
-
+/* texte et images */
 p {
   font-size: 18px;
   color: rgb(50, 50, 51);
@@ -112,6 +107,7 @@ img {
   height: auto;
 }
 
+/* cartes manifestations */
 .manif {
   background: white;
   border-radius: 10px;
@@ -149,15 +145,13 @@ img {
   background-color: #0056b3;
 }
 
-
-/* --- FLIP CARD --- */
-
+/* flip card */
 .manif {
   width: 100%;
   max-width: 600px;
   height: 500px;
   perspective: 1000px;
-  padding: 0; /* On enlève le padding pour éviter les bugs de flip */
+  padding: 0;
 }
 
 .manif-inner {
@@ -185,7 +179,6 @@ img {
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
-/* Face avant */
 .manif-front img {
   width: 100%;
   height: 70%;
@@ -200,19 +193,78 @@ img {
   margin-top: 10px;
 }
 
-/* Face arrière */
 .manif-back {
   transform: rotateY(180deg);
+  padding: 15px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  overflow-y: auto;
+  max-height: 100%;
+  border-radius: 10px;
+}
+
+.manif-back h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.manif-back p {
+  font-size: 16px;
+  margin: 8px 0;
+  text-align: left;
+  width: 100%;
 }
 
 .manif-back button {
   padding: 10px;
   border: none;
-  background: #333;
-  color: white;
   border-radius: 5px;
   cursor: pointer;
+  width: 90%;
+  margin: 10px auto;
+}
+
+.manif-back .retour {
+  background-color: #dc3545;
+  margin-top: auto;
+  color: white;
+}
+
+.manif-back .retour:hover {
+  background-color: #c82333;
+}
+
+/* newsletter */
+.newsletter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.newsletter input {
+  padding: 8px;
+  width: 90%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.newsletter button {
+  background-color: #28a745;
+  width: 90%;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.newsletter button:hover {
+  background-color: #218838;
 }
