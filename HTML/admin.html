@@ -14,17 +14,13 @@
 
     <main>
       <!-- GESTION DES MANIFESTATIONS -->
-
       <section>
         <h2>Gestion des manifestations</h2>
-
         <button type="button" id="exporter-donnees">
           Exporter les données
         </button>
-
-
-        <div class="TableManifs32">
-
+        <!-- 🔥 CONTENEUR SCROLL -->
+        <div class="table-container">
           <table>
             <thead>
               <tr>
@@ -41,73 +37,49 @@
                 <th>Actions</th>
               </tr>
             </thead>
-
+            <tbody id="liste-manifs">
+              <!-- JS injecte ici -->
+            </tbody>
+          </table>
         </div>
-
-          <tbody id="liste-manifs">
-            <!-- JS -->
-          </tbody>
-        </table>
       </section>
-
       <!-- FORMULAIRE AJOUT / MODIFICATION -->
-
       <section>
         <h2>Ajouter / Modifier une manifestation</h2>
-
         <form
           id="form-manifestation"
           method="post"
           enctype="multipart/form-data"
         >
-          <label>Titre</label>
-          <input type="text" name="titre" required />
-
+          <label>Titre</label> <input type="text" name="titre" required />
           <label>Description</label>
           <textarea name="description" required></textarea>
-
           <label>Date de début</label>
           <input type="date" name="date_debut" required />
-
           <label>Date de fin</label>
           <input type="date" name="date_fin" required />
-
           <label>Horaire de début</label>
           <input type="time" name="horraire_debut" required />
-
           <label>Horaire de fin</label>
-          <input type="time" name="horraire_fin" required />
-
-          <label>Lieu</label>
-          <input type="text" name="lieu" required />
-
-          <label>Catégorie</label>
+          <input type="time" name="horraire_fin" required /> <label>Lieu</label>
+          <input type="text" name="lieu" required /> <label>Catégorie</label>
           <select name="categorie" required></select>
-
           <label>Image</label>
-
           <input type="file" name="image" accept="image/*" />
-
           <img
             id="preview-image"
             style="max-width: 150px; display: block; margin-top: 10px"
           />
-
           <label>Statut</label>
-
           <input type="text" name="statut" placeholder="Entrez le statut" />
-
           <button type="submit">Enregistrer</button>
           <div id="message" style="color: red; margin-bottom: 10px"></div>
-          <! -- Affichage des messages d'erreur ou de succès -->
+          <!-- Affichage des messages -->
         </form>
       </section>
-
       <!-- STATISTIQUES -->
-
       <section>
         <h2>Manifestations avec le plus d’intérêt</h2>
-
         <ul id="top-interets"></ul>
       </section>
     </main>

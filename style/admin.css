@@ -1,108 +1,134 @@
 @import url("https://fonts.googleapis.com/css?family=Quicksand&display=swap");
 
-header {
-  position: relative; /* AJOUT AFIN DE NE PAS AVOIR DE SOUCI AVEC LE BOUTON CO */
-  background-color: rgb(255, 255, 255);
-  border-bottom: 1px solid rgb(0, 0, 0);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(19, 16, 16, 1);
-  display: flex;
-  justify-content: center; 
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 17px;
-  font-family: "Quicksand", sans-serif;
-}
-
+/* GLOBAL */
 body {
-  margin: 0;
-  background-color: rgb(216, 238, 255);
-  font-family: "Quicksand", sans-serif;
-  min-height: 100vh;
+margin: 0;
+background-color: rgb(216, 238, 255);
+font-family: "Quicksand", sans-serif;
+min-height: 100vh;
 }
 
 /* HEADER */
 header {
-  background-color: white;
-  border-bottom: 1px solid black;
-  box-shadow: 0 0 10px rgba(19, 16, 16, 1);
-  text-align: center;
-  padding: 15px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+position: relative;
+background-color: white;
+border-bottom: 1px solid black;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(19, 16, 16, 1);
+text-align: center;
+padding: 15px;
+text-transform: uppercase;
+letter-spacing: 1px;
+font-size: 17px;
 }
 
 /* MAIN */
 main {
-  width: 90%;
-  margin: 30px auto;
+width: 90%;
+margin: 30px auto;
 }
 
 /* SECTIONS */
 section {
-  background-color: white;
-  padding: 20px;
-  margin-bottom: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(19, 16, 16, 0.5);
+background-color: white;
+padding: 20px;
+margin-bottom: 30px;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(19, 16, 16, 0.5);
 }
 
 /* TITRES */
 h2 {
-  text-align: center;
-  margin-bottom: 20px;
+text-align: center;
+margin-bottom: 20px;
 }
-
-
-
 
 /* BOUTONS */
 button {
-  padding: 8px 15px;
-  border-radius: 5px;
-  border: 1px solid #333;
-  background-color: #eee;
-  cursor: pointer;
-  transition: background 0.3s;
-  margin: 5px 0;
+padding: 8px 15px;
+border-radius: 5px;
+border: 1px solid #333;
+background-color: #eee;
+cursor: pointer;
+transition: background 0.3s, transform 0.1s;
+margin: 5px 0;
 }
 
 button:hover {
-  background-color: #ccc;
+background-color: #ccc;
+transform: scale(1.03);
+}
+
+/* 🔥 CONTENEUR SCROLL TABLE */
+.table-container {
+width: 100%;
+overflow-x: auto;
 }
 
 /* TABLE */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
+width: 100%;
+min-width: 1000px; /* IMPORTANT pour activer le scroll */
+border-collapse: collapse;
+margin-top: 15px;
+background-color: white;
 }
 
+/* CELLULES */
 th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: center;
+border: 1px solid #ccc;
+padding: 10px;
+text-align: center;
+white-space: nowrap; /* évite que le texte casse les lignes */
 }
 
+/* HEADER TABLE */
 th {
-  background-color: #f0f0f0;
+background-color: #f0f0f0;
+}
+
+/* LIGNES ALTERNÉES (plus lisible) */
+tr:nth-child(even) {
+background-color: #fafafa;
+}
+
+/* IMAGES DANS TABLE */
+td img {
+max-width: 80px;
+border-radius: 5px;
+}
+
+/* SCROLLBAR (optionnel mais stylé) */
+.table-container::-webkit-scrollbar {
+height: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+background: #888;
+border-radius: 4px;
 }
 
 /* FORMULAIRE */
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+display: flex;
+flex-direction: column;
+gap: 10px;
 }
 
 input, textarea, select {
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+padding: 8px;
+border-radius: 5px;
+border: 1px solid #ccc;
+font-family: "Quicksand", sans-serif;
 }
 
 textarea {
-  resize: vertical;
-  min-height: 80px;
+resize: vertical;
+min-height: 80px;
 }
 
+/* MESSAGE */
+#message {
+margin-top: 10px;
+font-weight: bold;
+}
