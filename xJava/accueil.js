@@ -35,8 +35,10 @@ async function chargerManifestations() {
     return;
   }
 
-  toutesLesManifs = data;
-  afficherManifestations(data);
+  // filtrer directement les manifestations archivées (id_statut === 1)
+  toutesLesManifs = data.filter((m) => m.id_statut !== 1);
+
+  afficherManifestations(toutesLesManifs);
   remplirCategories();
 }
 
@@ -116,18 +118,13 @@ function afficherManifestations(manifestations) {
 
     container.appendChild(article);
 
-    // -----------------------------------
     // flip
-    // -----------------------------------
     article.querySelector(".voir-plus").onclick = () =>
       article.classList.add("flip");
-
     article.querySelector(".retour").onclick = () =>
       article.classList.remove("flip");
 
-    // -----------------------------------
     // bouton intéressé
-    // -----------------------------------
     article.querySelector(".interesse").onclick = async () => {
       let { data, error } = await supabase
         .from("manifestation")
@@ -142,9 +139,7 @@ function afficherManifestations(manifestations) {
       manif.nb_interesses = nouveauNb;
     };
 
-    // -----------------------------------
     // newsletter (message local)
-    // -----------------------------------
     let btnNewsletter = article.querySelector(".inscrire-newsletter");
     let inputEmail = article.querySelector(".email-input");
     let messageLocal = article.querySelector(".message-newsletter");
@@ -152,7 +147,6 @@ function afficherManifestations(manifestations) {
     function showLocalMessage(msg, type = "error") {
       messageLocal.textContent = msg;
       messageLocal.style.color = type === "success" ? "green" : "red";
-
       setTimeout(() => {
         messageLocal.textContent = "";
       }, 3000);
@@ -226,7 +220,6 @@ btnDate.onclick = () => {
   let trie = [...toutesLesManifs].sort(
     (a, b) => new Date(a.date_debut) - new Date(b.date_debut),
   );
-
   afficherManifestations(trie);
 };
 
@@ -237,7 +230,6 @@ btnPopularite.onclick = () => {
   let trie = [...toutesLesManifs].sort(
     (a, b) => (b.nb_interesses ?? 0) - (a.nb_interesses ?? 0),
   );
-
   afficherManifestations(trie);
 };
 

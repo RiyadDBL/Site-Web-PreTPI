@@ -33,7 +33,6 @@ async function checkUser() {
     error,
   } = await supabase.auth.getUser();
 
-  // récupère le role stocké depuis la connexion
   const roleId = parseInt(localStorage.getItem("roleId"));
 
   if (error || !user || !roleId) {
@@ -45,10 +44,42 @@ async function checkUser() {
 }
 
 // -----------------------------------
-// Lancer l'admin si connecté
+// Mapping des statuts
+// -----------------------------------
+function getStatutLabel(id) {
+  switch (id) {
+    case 1:
+      return "Archivée";
+    case 2:
+      return "En cours de modification";
+    case 3:
+      return "Affichée";
+    default:
+      return "";
+  }
+}
+
+// -----------------------------------
+// Archiver automatiquement les manifestations terminées
+// -----------------------------------
+async function archiverFinies(manifs) {
+  const today = new Date();
+  for (const m of manifs) {
+    const dateFin = new Date(m.date_fin);
+    if (dateFin < today && m.id_statut !== 1) {
+      await supabase
+        .from("manifestation")
+        .update({ id_statut: 1 })
+        .eq("id_manifestation", m.id_manifestation);
+    }
+  }
+}
+
+// -----------------------------------
+// Initialisation de l'administration
 // -----------------------------------
 checkUser().then(async (roleId) => {
-  if (!roleId) return; // si pas connecté, on arrête tout ici
+  if (!roleId) return;
 
   const listeManifs = document.getElementById("liste-manifs");
   const formManif = document.getElementById("form-manifestation");
@@ -56,10 +87,9 @@ checkUser().then(async (roleId) => {
   const topInterets = document.getElementById("top-interets");
   const previewImage = document.getElementById("preview-image");
 
-  // 👀 Masquer certaines actions si roleId = 2
+  // Masquer certaines actions pour rôle restreint
+  if (roleId === 2 && exporterBtn) exporterBtn.remove();
   if (roleId === 2) {
-    if (exporterBtn) exporterBtn.remove();
-    // Supprimer automatiquement tous les boutons "Supprimer" après le rendu
     const observer = new MutationObserver(() => {
       document.querySelectorAll(".supprimer").forEach((btn) => btn.remove());
     });
@@ -67,14 +97,14 @@ checkUser().then(async (roleId) => {
   }
 
   // -----------------------------------
-  // Afficher catégories
+  // Charger les catégories
   // -----------------------------------
   async function afficherCategories() {
     const selectCat = formManif.querySelector('select[name="categorie"]');
     const { data, error } = await supabase.from("categorie").select("*");
 
     if (error) {
-      showMessage("Erreur lors du chargement des catégories.", "error");
+      showMessage("Erreur lors du chargement des catégories.");
       return;
     }
 
@@ -84,7 +114,7 @@ checkUser().then(async (roleId) => {
   }
 
   // -----------------------------------
-  // Afficher manifestations
+  // Afficher les manifestations
   // -----------------------------------
   async function afficherManifestations() {
     const { data, error } = await supabase
@@ -99,7 +129,7 @@ checkUser().then(async (roleId) => {
         horraire_debut,
         horraire_fin,
         lieu,
-        statut,
+        id_statut,
         nb_interesses,
         image,
         id_categorie,
@@ -109,11 +139,36 @@ checkUser().then(async (roleId) => {
       .order("date_debut", { ascending: true });
 
     if (error) {
-      showMessage("Erreur lors du chargement des manifestations.", "error");
+      showMessage("Erreur lors du chargement des manifestations.");
       return;
     }
 
-    listeManifs.innerHTML = data
+    // 🔹 Archiver automatiquement les manifestations terminées
+    await archiverFinies(data);
+
+    // 🔹 Recharger les données pour afficher le statut correct
+    const { data: updatedData } = await supabase
+      .from("manifestation")
+      .select(
+        `
+        id_manifestation,
+        titre,
+        description,
+        date_debut,
+        date_fin,
+        horraire_debut,
+        horraire_fin,
+        lieu,
+        id_statut,
+        nb_interesses,
+        image,
+        id_categorie,
+        categorie:categorie(nom)
+      `,
+      )
+      .order("date_debut", { ascending: true });
+
+    listeManifs.innerHTML = updatedData
       .map(
         (m) => `
 <tr>
@@ -124,12 +179,16 @@ checkUser().then(async (roleId) => {
 <td>${m.horraire_fin ?? ""}</td>
 <td>${m.lieu ?? ""}</td>
 <td>${m.categorie?.nom ?? "-"}</td>
-<td>${m.statut ?? ""}</td>
+<td>${getStatutLabel(m.id_statut)}</td>
 <td>${m.nb_interesses ?? 0}</td>
 <td>${m.image ? `<img src="${m.image}" style="max-width:80px;border-radius:5px;">` : ""}</td>
 <td>
 <button class="modifier" data-id="${m.id_manifestation}">Modifier</button>
-${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supprimer</button>` : ""}
+${
+  roleId === 1
+    ? `<button class="supprimer" data-id="${m.id_manifestation}">Supprimer</button>`
+    : ""
+}
 </td>
 </tr>`,
       )
@@ -147,7 +206,7 @@ ${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supp
       .limit(5);
 
     if (error) {
-      showMessage("Erreur lors du chargement du top 5.", "error");
+      showMessage("Erreur lors du chargement du top 5.");
       return;
     }
 
@@ -175,10 +234,7 @@ ${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supp
         .eq("id_manifestation", id);
 
       if (error) {
-        showMessage(
-          "Erreur lors de la suppression de la manifestation.",
-          "error",
-        );
+        showMessage("Erreur lors de la suppression de la manifestation.");
         return;
       }
 
@@ -195,7 +251,7 @@ ${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supp
         .single();
 
       if (error) {
-        showMessage("Erreur lors du chargement de la manifestation.", "error");
+        showMessage("Erreur lors du chargement de la manifestation.");
         return;
       }
 
@@ -207,7 +263,7 @@ ${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supp
       formManif.horraire_fin.value = data.horraire_fin ?? "";
       formManif.lieu.value = data.lieu ?? "";
       formManif.categorie.value = data.id_categorie;
-      formManif.statut.value = data.statut ?? "";
+      formManif["id_statut"].value = data.id_statut ?? "";
       previewImage.src = data.image ?? "";
 
       formManif.dataset.editId = id;
@@ -234,7 +290,6 @@ ${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supp
       if (error) {
         showMessage(
           "Erreur dans le choix de l'image. Changez le nom ou le format.",
-          "error",
         );
         return;
       }
@@ -246,31 +301,28 @@ ${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supp
     } = await supabase.auth.getUser();
     const idAdmin = user.id;
 
-    if (editId) {
-      let updateData = {
-        titre: formData.get("titre"),
-        description: formData.get("description"),
-        date_debut: formData.get("date_debut"),
-        date_fin: formData.get("date_fin"),
-        horraire_debut: formData.get("horraire_debut"),
-        horraire_fin: formData.get("horraire_fin"),
-        lieu: formData.get("lieu"),
-        id_categorie: parseInt(formData.get("categorie")),
-        statut: formData.get("statut"),
-        id_admin: idAdmin,
-      };
-      if (imageUrl) updateData.image = imageUrl;
+    const formulaireData = {
+      titre: formData.get("titre"),
+      description: formData.get("description"),
+      date_debut: formData.get("date_debut"),
+      date_fin: formData.get("date_fin"),
+      horraire_debut: formData.get("horraire_debut"),
+      horraire_fin: formData.get("horraire_fin"),
+      lieu: formData.get("lieu"),
+      id_categorie: parseInt(formData.get("categorie")),
+      id_statut: parseInt(formData.get("id_statut")),
+      id_admin: idAdmin,
+    };
+    if (imageUrl) formulaireData.image = imageUrl;
 
+    if (editId) {
       const { error } = await supabase
         .from("manifestation")
-        .update(updateData)
+        .update(formulaireData)
         .eq("id_manifestation", editId);
 
       if (error) {
-        showMessage(
-          "Erreur lors de la mise à jour de la manifestation.",
-          "error",
-        );
+        showMessage("Erreur lors de la mise à jour de la manifestation.");
         return;
       }
 
@@ -278,25 +330,13 @@ ${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supp
       delete formManif.dataset.editId;
       formManif.querySelector("button").textContent = "Enregistrer";
     } else {
-      const { error } = await supabase.from("manifestation").insert([
-        {
-          titre: formData.get("titre"),
-          description: formData.get("description"),
-          date_debut: formData.get("date_debut"),
-          date_fin: formData.get("date_fin"),
-          horraire_debut: formData.get("horraire_debut"),
-          horraire_fin: formData.get("horraire_fin"),
-          lieu: formData.get("lieu"),
-          id_categorie: parseInt(formData.get("categorie")),
-          statut: formData.get("statut"),
-          id_admin: idAdmin,
-          image: imageUrl,
-          nb_interesses: 0,
-        },
-      ]);
+      formulaireData.nb_interesses = 0;
+      const { error } = await supabase
+        .from("manifestation")
+        .insert([formulaireData]);
 
       if (error) {
-        showMessage("Erreur lors de l'ajout de la manifestation.", "error");
+        showMessage("Erreur lors de l'ajout de la manifestation.");
         return;
       }
 
@@ -316,7 +356,7 @@ ${roleId === 1 ? `<button class="supprimer" data-id="${m.id_manifestation}">Supp
     exporterBtn.addEventListener("click", async () => {
       const { data, error } = await supabase.from("manifestation").select("*");
       if (error) {
-        showMessage("Erreur lors de l'export CSV.", "error");
+        showMessage("Erreur lors de l'export CSV.");
         return;
       }
 
