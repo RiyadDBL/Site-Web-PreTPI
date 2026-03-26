@@ -46,7 +46,6 @@
             <button type="button">Date</button>
             <button type="button">Les plus populaires</button>
 
-            <!-- SELECT catégorie direct -->
             <select id="filtre-categorie">
               <option value="">Toutes les catégories</option>
             </select>
@@ -63,6 +62,52 @@
         </div>
       </section>
     </main>
+
+    <!-- ✅ TEMPLATE FLIPCARD (NOUVEAU) -->
+    <template id="manif-template">
+      <article class="manif">
+        <div class="manif-inner">
+          <div class="manif-front">
+            <img class="image" src="" alt="" />
+            <div class="overlay">
+              <h3 class="titre"></h3>
+              <button class="voir-plus">Voir plus</button>
+            </div>
+          </div>
+
+          <div class="manif-back">
+            <h3 class="titre"></h3>
+
+            <p><strong>Catégorie :</strong> <span class="categorie"></span></p>
+            <p><strong>Début :</strong> <span class="date-debut"></span></p>
+            <p><strong>Fin :</strong> <span class="date-fin"></span></p>
+            <p><strong>Horaire :</strong> <span class="horaire"></span></p>
+            <p>
+              <strong>Description :</strong> <span class="description"></span>
+            </p>
+
+            <p>
+              <strong>Intéressés :</strong>
+              <span class="compteur"></span>
+            </p>
+
+            <button class="interesse">Je suis intéressé</button>
+
+            <div class="newsletter">
+              <input
+                type="email"
+                placeholder="Votre email"
+                class="email-input"
+              />
+              <button class="inscrire-newsletter">S'inscrire</button>
+              <div class="message-newsletter"></div>
+            </div>
+
+            <button class="retour">Retour</button>
+          </div>
+        </div>
+      </article>
+    </template>
 
     <footer>
       <p>&copy; 2026 ManifGO. Tous droits réservés à M.Kattar.</p>

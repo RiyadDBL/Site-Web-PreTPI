@@ -21,6 +21,8 @@ let btnDate = document.querySelector(".trier button:nth-child(1)");
 let btnPopularite = document.querySelector(".trier button:nth-child(2)");
 let selectCategorie = document.getElementById("filtre-categorie");
 
+let template = document.getElementById("manif-template");
+
 // -----------------------------------
 // charger manifestations
 // -----------------------------------
@@ -72,51 +74,31 @@ function afficherManifestations(manifestations) {
   }
 
   manifestations.forEach((manif) => {
-    let article = document.createElement("article");
-    article.classList.add("manif");
+    let clone = template.content.cloneNode(true);
+    let article = clone.querySelector(".manif");
 
+    // dates
     let dateDebut = new Date(manif.date_debut).toLocaleDateString();
     let dateFin = new Date(manif.date_fin).toLocaleDateString();
 
-    article.innerHTML = `
-      <div class="manif-inner">
+    // remplir les données
+    article.querySelector(".image").src = manif.image || "";
+    article.querySelector(".image").alt = manif.titre;
 
-        <div class="manif-front">
-          <img src="${manif.image || ""}" alt="${manif.titre}">
-          <div class="overlay">
-            <h3>${manif.titre}</h3>
-            <button class="voir-plus">Voir plus</button>
-          </div>
-        </div>
+    article
+      .querySelectorAll(".titre")
+      .forEach((el) => (el.textContent = manif.titre));
 
-        <div class="manif-back">
-          <h3>${manif.titre}</h3>
-          <p><strong>Catégorie :</strong> ${manif.categorie?.nom ?? "-"}</p>
-          <p><strong>Début :</strong> ${dateDebut}</p>
-          <p><strong>Fin :</strong> ${dateFin}</p>
-          <p><strong>Horaire :</strong> ${manif.horraire_debut ?? ""} - ${manif.horraire_fin ?? ""}</p>
-          <p><strong>Description :</strong> ${manif.description ?? ""}</p>
+    article.querySelector(".categorie").textContent =
+      manif.categorie?.nom ?? "-";
+    article.querySelector(".date-debut").textContent = dateDebut;
+    article.querySelector(".date-fin").textContent = dateFin;
+    article.querySelector(".horaire").textContent =
+      (manif.horraire_debut ?? "") + " - " + (manif.horraire_fin ?? "");
+    article.querySelector(".description").textContent = manif.description ?? "";
+    article.querySelector(".compteur").textContent = manif.nb_interesses ?? 0;
 
-          <p>
-            <strong>Intéressés :</strong>
-            <span class="compteur">${manif.nb_interesses ?? 0}</span>
-          </p>
-
-          <button class="interesse">Je suis intéressé</button>
-
-          <div class="newsletter">
-            <input type="email" placeholder="Votre email" class="email-input">
-            <button class="inscrire-newsletter">S'inscrire</button>
-            <div class="message-newsletter"></div>
-          </div>
-
-          <button class="retour">Retour</button>
-        </div>
-
-      </div>
-    `;
-
-    container.appendChild(article);
+    container.appendChild(clone);
 
     // flip
     article.querySelector(".voir-plus").onclick = () =>
